@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+settings_dir = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -26,6 +29,10 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Celery settings for queing booking tasks
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'django://'
 
 # Application definition
 
@@ -36,6 +43,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrapform',
+    'bootstrap3',
+    'djcelery',
+    'kombu.transport.django',
+    'game',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,7 +80,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Calcutta'
 
 USE_I18N = True
 
@@ -80,4 +92,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+STATIC_ROOT = './staticfiles'
+
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = ( 
+    (os.path.join(PROJECT_ROOT, 'static/')),
+)
+
+TEMPLATE_DIRS = ( 
+	os.path.join(PROJECT_ROOT, 'templates/'),
+)
+
+STATICFILES_FINDERS = {
+ 	'django.contrib.staticfiles.finders.FileSystemFinder',
+	'django.contrib.staticfiles.finders.AppDirectoriesFinder'
+}
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
+
+MEDIA_URL = '/media/'
