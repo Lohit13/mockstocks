@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'djcelery',
     'kombu.transport.django',
+    'nocaptcha_recaptcha',
     'game',
 )
 
@@ -113,3 +114,7 @@ STATICFILES_FINDERS = {
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
 MEDIA_URL = '/media/'
+
+NORECAPTCHA_SITE_KEY   = "6LcbFg4TAAAAAA5aFMeGFmDf0q0NVBGKsI1Uqzmj"
+NORECAPTCHA_SECRET_KEY = "6LcbFg4TAAAAAITqrBWuwH2S9GOk_zO10quel8E1"
+

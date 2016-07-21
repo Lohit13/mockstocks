@@ -85,7 +85,6 @@ class Transaction(models.Model):
 	# Bought at
 	bought_at = models.DateTimeField()
 
-
 # Model to corelate user and company
 class Corelate(models.Model):
 	user = models.ForeignKey(UserProfile)
