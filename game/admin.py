@@ -3,6 +3,6 @@ from game.models import *
 
 # Register your models here.
 
-Models = [UserProfile, Company, Offer, Transaction]
+Models = [UserProfile, Company, Offer, Transaction, Corelate]
 
 admin.site.register(Models)

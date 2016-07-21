@@ -17,7 +17,7 @@ class UserProfile(models.Model):
 	def corelate(self):
 		companies = Company.objects.all()
 		for company in companies:
-			c = Corelate(user=self,company=c)
+			c = Corelate(user=self,company=company)
 			c.save()
 
 
@@ -91,4 +91,4 @@ class Corelate(models.Model):
 	shares = models.IntegerField(default=0)
 
 	def __unicode__(self):
-		return str(self.user.user.first_name)+str(company.name)
+		return str(self.user.user.first_name)
