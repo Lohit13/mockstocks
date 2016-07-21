@@ -20,4 +20,7 @@ urlpatterns = patterns('',
     # Buy Shares
     url(r'^buy/$', 'game.views.buy', name='buy shares'),
 
+    # Remove an offer
+	url(r'^remove/(?P<offer_id>\d+)/$', 'portal.views.remove_offer', name='remove offer'),
+
 )

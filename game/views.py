@@ -54,3 +54,19 @@ def sell(request):
 def buy(request):
 	return render_to_response('buy.html')
 
+
+# Remove an offer if it's still active
+def remove_offer(request,offer_id):
+	user = UserProfile.objects.get(user=request.user)
+	offer = Offer.objects.get(id=offer_id)
+
+	if not offer.user == user or offer.active == False:
+		return HttpResponseRedirect('/sell')
+
+	offer.delete()
+
+	return HttpResponseRedirect('/sell')
+
+
+
+

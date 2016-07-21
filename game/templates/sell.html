@@ -34,7 +34,7 @@
 						</strong>
 						</p>
 					</div>
-					<a href="#">
+					<a href="/remove/{{ offer.id }}/">
 						<div class="box-bottom">
 							<strong><font color="white">Remove Offer</font></strong>
 						</div>
@@ -60,6 +60,27 @@
 
 		<center>
 			<h3>Make a new offer</h3>
+
+			<form method="post" action="/sell" class="form-horizontal" style="width:30%;">
+
+				<div class="form-group">
+					<label for="company">Company</label>
+					<select class="form-control" id="company" name="company">
+				    	<option>1</option>
+				    	<option>2</option>
+				    	<option>3</option>
+				    	<option>4</option>
+				  </select>
+				</div>
+
+				<div class="form-group">
+					<label for="shares"># Shares</label>
+					<input type="number" class="form-control" min="0" max="10" id="shares" name="shares"/>
+				</div>
+
+				<input type="submit" class="btn btn-success" value="Offer">
+
+			</form>
 		</center>
 
 	</div>
