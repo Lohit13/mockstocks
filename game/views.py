@@ -16,11 +16,35 @@ def get_rank(user):
 	return i
 
 
+
 @login_required(login_url='/',redirect_field_name=None)
 def dashboard(request):
+
+	# for i in range(5):
+	# 	newCompany = Company(name = "test" + str(i),
+	# 						 ticker = "test" + str(i),
+	# 						 industry = "pompom",
+	# 						 turnover = 12345,
+	# 						 profit = 12345,
+	# 						 shares = 2000,
+	# 						 bookvalue = 4000,
+	# 						 curprice = 1234,
+	# 						 dayhi = 23,
+	# 						 daylo = 32,
+	# 						 close = 45,
+	# 						 netchange = 123,
+	# 						 yearhi = 1234,
+	# 						 yearlo = 2345,
+	# 						 peratio = 345,
+	# 						 volumes = 345)
+	# 	newCompany.save()
+		# print "new company"
+
+	
 	user = UserProfile.objects.get(user=request.user)
 	args = {}
 	args['user'] = user
+	args["allcompanies"] = Company.objects.all()
 	args['rank'] = get_rank(user)
 	co = Corelate.objects.filter(user=user)
 	shares = []
