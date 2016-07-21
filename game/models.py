@@ -76,3 +76,4 @@ class Transaction(models.Model):
 	buyer = models.ForeignKey(UserProfile)
 	# Bought at
 	bought_at = models.DateTimeField()
+

@@ -31,3 +31,4 @@ def sell(request):
 # Buy shares
 def buy(request):
 	return render_to_response('buy.html')
+

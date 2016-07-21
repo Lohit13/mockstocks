@@ -5,6 +5,47 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from game.models import *
 
+import requests
+import json
+
+from django import forms
+from nocaptcha_recaptcha.fields import NoReCaptchaField
+
+
+class SignUpForm(forms.ModelForm):
+
+	name = forms.CharField(required = True, widget = forms.TextInput(attrs = {'class' : 'form-control',
+																				  'placeholder' : 'Name',
+																				  'autocomplete' : 'off',
+																				  'name' : 'name'}))
+
+	phone = forms.CharField(required = True, widget = forms.TextInput(attrs = {'class' : 'form-control',
+																				  'placeholder' : 'Phone Number',
+																				  'autocomplete' : 'off',
+																				  'name' : 'phone',
+																				  'pattern' : "[1-9][0-9]{9}"}))
+
+	email = forms.EmailField(required = True, widget = forms.EmailInput(attrs = {'class' : 'form-control',
+																				 'placeholder' : 'Email id',
+																				 'autocomplete' : 'off',
+																				 'name' : 'email',
+																				 'pattern' : "[^@]+@[^@]+\.[a-zA-Z]{2,6}"}))
+
+	institute = forms.EmailField(required = True, widget = forms.TextInput(attrs = {'class' : 'form-control',
+																				 	 'placeholder' : '',
+																				 	 'autocomplete' : 'off',
+																				 	 'name' : 'institute'}))
+
+	password = forms.CharField(required = True, widget = forms.PasswordInput(attrs = {'class' : 'form-control',
+																					  'placeholder' : 'Something Secure',
+																					  'name' : 'pass'}))
+
+	captcha = NoReCaptchaField()
+
+	class Meta:
+		model = User
+		fields = ('username', 'password', 'email')
+
 
 # Home page of app
 def index(request):
@@ -59,39 +100,92 @@ def register(request):
 	args.update(csrf(request))
 
 	if request.method == 'POST':
-		err = 0
-		args['error'] = ''
-		email = request.POST['email']
-		password = request.POST['password']
-		name = request.POST['name']
-		institute = request.POST['institute']
-		phno = request.POST['phno']
 
-		# Form validations
-		if len(email) < 7:
-			err = 1
-			args['erremail'] = 'Enter a valid email address'
-		if len(name) < 1 or not all(x.isalpha() or x.isspace() for x in name):
-			err = 1
-			args['errname'] = 'Name should consist of letters and spaces only'
-		if not check_password(password):
-			err = 1
-			args['errpass'] = 'Password should consist of letters, numbers and underscores only. Mininum length is 8 characters'
-		if len(institute) < 1 or not all(x.isalpha() or x.isspace() for x in institute):
-			err = 1
-			args['errinst'] = 'Institute should consist of letters and spaces only'
-		if len(phno) != 10 and not isdigit(phno):
-			err = 1
-			args['errphno'] = 'Enter 10 digit mobile number'
+		form = SignUpForm(request.POST)
 
-		# In case of no error, create user
-		if err == 0:
-			if create_user({'name':name,'email':email,'password':password,'institute':institute,'phno':phno}):
-				args['success'] = 'Registration successful! You may now login and start playing.'
+		captach_response = requests.post("https://www.google.com/recaptcha/api/siteverify",
+										 data={'secret': "6LcbFg4TAAAAAITqrBWuwH2S9GOk_zO10quel8E1",
+											   'response': request.POST["g-recaptcha-response"]})
+
+		verdict = json.loads(captach_response.text)['success']
+
+		state = False
+
+		if verdict == True:
+
+			if form.is_valid():
+				state = True
+
+			elif 'captcha' in form.errors.keys():
+				form.errors.pop('captcha')
+				state = True
+
+		else:
+			args['form'] = form
+			return render_to_response("register.html", args)
+
+		if state == True:
+
+			if User.objects.filter(username = request.POST["name"]).exists():
+				args['form'] = form
+				return render_to_response("register.html", args)
+
+			elif User.objects.filter(email = request.POST["email"]).exists():
+
+				form.add_error(None, "Email ID already registered :(")
+				args['form'] = form
+				return render_to_response("register.html", args)
+
 			else:
-				args['data'] = request.POST
-				args['failure'] = 'An error occured while creating account. Please check the details and try again'
+				user = User.objects.create_user(username = request.POST["phone"],
+												password = request.POST["password"],
+												email 	 = request.POST["email"])
+				user.first_name = request.POST['name']
+				user.save()
 
+				u = UserProfile(user = user, institute = request.POST['institute'])
+				u.save()
+
+				return render_to_response("index.html", args)
+		else:
+			args['form'] = form
+			return render_to_response("register.html", args)
+
+
+		# err = 0
+		# args['error'] = ''
+		# email = request.POST['email']
+		# password = request.POST['password']
+		# name = request.POST['name']
+		# institute = request.POST['institute']
+		# phno = request.POST['phno']
+
+		# # Form validations
+		# if len(email) < 7:
+		# 	err = 1
+		# 	args['erremail'] = 'Enter a valid email address'
+		# if len(name) < 1 or not all(x.isalpha() or x.isspace() for x in name):
+		# 	err = 1
+		# 	args['errname'] = 'Name should consist of letters and spaces only'
+		# if not check_password(password):
+		# 	err = 1
+		# 	args['errpass'] = 'Password should consist of letters, numbers and underscores only. Mininum length is 8 characters'
+		# if len(institute) < 1 or not all(x.isalpha() or x.isspace() for x in institute):
+		# 	err = 1
+		# 	args['errinst'] = 'Institute should consist of letters and spaces only'
+		# if len(phno) != 10 and not isdigit(phno):
+		# 	err = 1
+		# 	args['errphno'] = 'Enter 10 digit mobile number'
+
+		# # In case of no error, create user
+		# if err == 0:
+		# 	if create_user({'name':name,'email':email,'password':password,'institute':institute,'phno':phno}):
+		# 		args['success'] = 'Registration successful! You may now login and start playing.'
+		# 	else:
+		# 		args['data'] = request.POST
+		# 		args['failure'] = 'An error occured while creating account. Please check the details and try again'
+
+	args["form"] = SignUpForm()
 	return render_to_response('register.html',args)
 
 
