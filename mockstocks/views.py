@@ -8,6 +8,8 @@ from game.models import *
 
 # Home page of app
 def index(request):
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/dashboard')
 	args = {}
 	args.update(csrf(request))
 	return render_to_response('index.html', args)

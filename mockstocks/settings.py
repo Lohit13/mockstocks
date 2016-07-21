@@ -102,6 +102,7 @@ STATICFILES_DIRS = (
 
 TEMPLATE_DIRS = ( 
 	os.path.join(PROJECT_ROOT, 'templates/'),
+    os.path.join(PROJECT_ROOT, 'game/templates/'),
 )
 
 STATICFILES_FINDERS = {

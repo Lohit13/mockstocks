@@ -377,7 +377,7 @@ section.callaction {
 	width: 100%;
 }
 .box-gray  {
-	background: #f8f8f8;
+	background: #e8e8e8;
 	padding: 20px 20px 30px;
 }
 .box-gray  h4,.box-gray  i {
@@ -1623,7 +1623,7 @@ section.demogrid .col-lg-12.nest {
 ================================ */
 
 .solidline {
-	border-top:1px solid #f5f5f5;
+	border-top:1px solid #b5b5b5;
 	margin:0 0 30px;
 }
 
@@ -1973,4 +1973,16 @@ article img.pull-right, article .align-right{
 
 @media (max-width: 360px) {
 
+}
+
+.card {
+	width: 80%;
+	padding-top: 20px;
+	padding-bottom: 25px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: #dddddd;
+	opacity: 50%;
+	margin-bottom: 80px;
+	border-radius: 4px;
 }

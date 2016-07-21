@@ -1,0 +1,273 @@
+{% extends "gamebase.html" %}
+{% load staticfiles %}
+{% load subtract %}
+{% block content %}
+
+	<section class="callaction">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="big-cta">
+					<div class="cta-text">
+						<h2>Welcome Lohitaksh</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</section>
+
+	<section id="content">
+	<div class="container">
+
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="row">
+					<center>
+							<div class="panel panel-default panel-primary">
+								<div class="panel-heading"><marquee><strong>NEWS UPDATES!<strong></marquee></div>
+								<div class="panel-footer"><marquee><strong>PRICES!<strong></marquee></div>
+							</div>
+					</center>
+				</div>
+			</div>
+		</div>
+
+		<!-- divider -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="solidline">
+				</div>
+			</div>
+		</div>
+		<!-- end divider -->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="row">
+					<div class="col-lg-4">
+						<a href="/sell">
+							<div class="box">
+								<div class="box-bottom">
+									<font color="white"><strong>Sell Shares</strong></font>
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="col-lg-4">
+						<a href="/buy">
+							<div class="box">
+								<div class="box-bottom">
+									<font color="white"><strong>Buy Shares</strong></font>
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="col-lg-4">
+						<a href="/companies">
+							<div class="box">
+								<div class="box-bottom">
+									<font color="white"><strong>All Companies</strong></font>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- divider -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="solidline">
+				</div>
+			</div>
+		</div>
+		<!-- end divider -->
+
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="row">
+					<div class="col-lg-3">
+						<div class="box">
+							<div class="box-bottom">
+								<a href="#">Acc. Balance : Rs. {{ user.cash }}</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="box">
+							<div class="box-bottom">
+								<a href="#">Net Worth : Rs. {{ user.networth }}</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="box">
+							<div class="box-bottom">
+								<a href="#">Share Value : Rs. {{ user.networth|subtract:user.cash }}</a>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="box">
+							<div class="box-bottom">
+								<a href="#">Rank : 1</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- divider -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="solidline">
+				</div>
+			</div>
+		</div>
+		<!-- end divider -->
+
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="big-cta">
+						<div class="cta-text">
+							<h2>Your Shares</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+
+		<!-- Portfolio Projects -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="row">
+					<section id="projects">
+					<ul id="thumbs" class="portfolio">
+						<!-- Item Project and Filter Name -->
+						<li class="col-lg-3 design" style="padding:0;">
+							<div class="item-thumbs" style="background-color:#e8e8e8;height:95%;width:95%;">
+							<!-- Fancybox - Gallery Enabled - Title - Full Image -->
+							<a class="hover-wrap" href="/history">
+							<!-- <div class="hover-wrap fancybox">
+							</div> -->
+							<span class="overlay-img"></span>
+							<span class="overlay-img-thumb font-icon-plus"></span>
+							</a>
+							<!-- Thumb Image and Description -->
+							<center>
+								<h3>Apple</h3>
+								<p>
+								<strong>
+									# Shares : 50<br><br>
+									Buying Price : Rs. 50<br><br>
+									Current Price : Rs. 53<br><br>
+									Total : Rs. 5650
+								</strong>
+								</p>
+							</center>
+							</div>
+						</li>
+						<!-- End Item Project -->
+
+						<!-- Item Project and Filter Name -->
+						<li class="col-lg-3 design" style="padding:0;">
+							<div class="item-thumbs" style="background-color:#e8e8e8;height:95%;width:95%;">
+							<!-- Fancybox - Gallery Enabled - Title - Full Image -->
+							<a class="hover-wrap" href="/history">
+							<!-- <div class="hover-wrap fancybox">
+							</div> -->
+							<span class="overlay-img"></span>
+							<span class="overlay-img-thumb font-icon-plus"></span>
+							</a>
+							<!-- Thumb Image and Description -->
+							<center>
+								<h3>Apple</h3>
+								<p>
+								<strong>
+									# Shares : 50<br><br>
+									Buying Price : Rs. 50<br><br>
+									Current Price : Rs. 53<br><br>
+									Total : Rs. 5650
+								</strong>
+								</p>
+							</center>
+							</div>
+						</li>
+						<!-- End Item Project -->
+
+						<!-- Item Project and Filter Name -->
+						<li class="col-lg-3 design" style="padding:0;">
+							<div class="item-thumbs" style="background-color:#e8e8e8;height:95%;width:95%;">
+							<!-- Fancybox - Gallery Enabled - Title - Full Image -->
+							<a class="hover-wrap" href="/history">
+							<!-- <div class="hover-wrap fancybox">
+							</div> -->
+							<span class="overlay-img"></span>
+							<span class="overlay-img-thumb font-icon-plus"></span>
+							</a>
+							<!-- Thumb Image and Description -->
+							<center>
+								<h3>Apple</h3>
+								<p>
+								<strong>
+									# Shares : 50<br><br>
+									Buying Price : Rs. 50<br><br>
+									Current Price : Rs. 53<br><br>
+									Total : Rs. 5650
+								</strong>
+								</p>
+							</center>
+							</div>
+						</li>
+						<!-- End Item Project -->
+
+						<!-- Item Project and Filter Name -->
+						<li class="col-lg-3 design" style="padding:0;">
+							<div class="item-thumbs" style="background-color:#e8e8e8;height:95%;width:95%;">
+							<!-- Fancybox - Gallery Enabled - Title - Full Image -->
+							<a class="hover-wrap" href="/history">
+							<!-- <div class="hover-wrap fancybox">
+							</div> -->
+							<span class="overlay-img"></span>
+							<span class="overlay-img-thumb font-icon-plus"></span>
+							</a>
+							<!-- Thumb Image and Description -->
+							<center>
+								<h3>Apple</h3>
+								<p>
+								<strong>
+									# Shares : 50<br><br>
+									Buying Price : Rs. 50<br><br>
+									Current Price : Rs. 53<br><br>
+									Total : Rs. 5650
+								</strong>
+								</p>
+							</center>
+							</div>
+						</li>
+						<!-- End Item Project -->
+
+					</ul>
+					</section>
+				</div>
+			</div>
+		</div>
+
+		<!-- divider -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="solidline">
+				</div>
+			</div>
+		</div>
+		<!-- end divider -->
+
+	</div>
+	</section>
+
+
+{% endblock %}
