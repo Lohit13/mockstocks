@@ -15,12 +15,19 @@ def get_rank(user):
 		i += 1
 	return i
 
+
 @login_required(login_url='/',redirect_field_name=None)
 def dashboard(request):
 	user = UserProfile.objects.get(user=request.user)
 	args = {}
 	args['user'] = user
 	args['rank'] = get_rank(user)
+	co = Corelate.objects.filter(user=user)
+	shares = []
+	for c in co:
+		if c.shares > 0:
+			shares.append(c)
+	args['shares'] = shares
 	return render_to_response('dashboard.html',args)
 
 
@@ -36,7 +43,11 @@ def companies(request):
 
 # Sell shares
 def sell(request):
-	return render_to_response('sell.html')
+	user = UserProfile.objects.get(user=request.user)
+	offers = Offer.objects.filter(user=user,active=True)
+	args = {}
+	args['offers'] = offers
+	return render_to_response('sell.html',args)
 
 
 # Buy shares

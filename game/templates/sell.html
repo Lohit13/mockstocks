@@ -21,15 +21,16 @@
 	<div class="container">
 
 		<div class="row">
-
+		{% if offers %}
+			{% for offer in offers %}
 			<div class="col-lg-4">
 		 		<div class="box">
 					<div class="box-gray aligncenter">
-						<h4>Company name</h4>
+						<h4>{{ offer.company }}</h4>
 						<p>
 						<strong>
-							# Shares : 50<br><br>
-							Offer price : Rs. 25
+							# Shares : {{ offer.shares }}<br><br>
+							Offer price : Rs. {{ offer.price }}
 						</strong>
 						</p>
 					</div>
@@ -40,47 +41,12 @@
 					</a>
 				</div>
 			</div>
-
-			<div class="col-lg-4">
-		 		<div class="box">
-					<div class="box-gray aligncenter">
-						<h4>Company name</h4>
-						<p>
-						<strong>
-							# Shares : 50<br><br>
-							Offer price : Rs. 25
-						</strong>
-						</p>
-					</div>
-					<a href="#">
-						<div class="box-bottom">
-							<strong><font color="white">Remove Offer</font></strong>
-						</div>
-					</a>
-				</div>
-			</div>
-
-			<div class="col-lg-4">
-		 		<div class="box">
-					<div class="box-gray aligncenter">
-						<h4>Company name</h4>
-						<p>
-						<strong>
-							# Shares : 50<br><br>
-							Offer price : Rs. 25
-						</strong>
-						</p>
-					</div>
-					<a href="#">
-						<div class="box-bottom">
-							<strong><font color="white">Remove Offer</font></strong>
-						</div>
-					</a>
-				</div>
-			</div>
-
-			
-
+			{% endfor %}
+		{% else %}
+			<center>
+				<h4>You haven't put up any offers yet</h4>
+			</center>
+		{% endif %}
 		</div>
 
 		<!-- divider -->

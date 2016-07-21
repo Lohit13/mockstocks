@@ -72,6 +72,8 @@ class Offer(models.Model):
 	price = models.IntegerField()
 	# Offered at
 	offered_at = models.DateTimeField()
+	# If not bought, then active is true
+	active = models.BooleanField(default=True)
 
 
 # Transaction model
