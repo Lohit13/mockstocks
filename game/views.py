@@ -5,11 +5,22 @@ from game.models import *
 
 # Create your views here.
 
+def get_rank(user):
+	users = UserProfile.objects.order_by('networth')
+	print users
+	i = 1
+	for u in users:
+		if u == user:
+			break
+		i += 1
+	return i
+
 @login_required(login_url='/',redirect_field_name=None)
 def dashboard(request):
 	user = UserProfile.objects.get(user=request.user)
 	args = {}
 	args['user'] = user
+	args['rank'] = get_rank(user)
 	return render_to_response('dashboard.html',args)
 
 

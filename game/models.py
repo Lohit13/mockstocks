@@ -14,6 +14,12 @@ class UserProfile(models.Model):
 	def __unicode__(self):
 		return self.user.get_full_name()
 
+	def corelate(self):
+		companies = Company.objects.all()
+		for company in companies:
+			c = Corelate(user=self,company=company)
+			c.save()
+
 
 # Model for a company
 class Company(models.Model):
@@ -77,3 +83,11 @@ class Transaction(models.Model):
 	# Bought at
 	bought_at = models.DateTimeField()
 
+# Model to corelate user and company
+class Corelate(models.Model):
+	user = models.ForeignKey(UserProfile)
+	company = models.ForeignKey(Company)
+	shares = models.IntegerField(default=0)
+
+	def __unicode__(self):
+		return str(self.user.user.first_name)

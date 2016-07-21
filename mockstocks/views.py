@@ -89,6 +89,7 @@ def create_user(details):
 		# Create user profile
 		u = UserProfile(user=user,institute=details['institute'])
 		u.save()
+		u.corelate()
 		return True
 	except:
 		return False
