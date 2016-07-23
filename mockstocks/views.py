@@ -4,6 +4,8 @@ from django.core.context_processors import csrf
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from game.models import *
+from game.views import get_networth
+from operator import itemgetter
 
 import requests
 import json
@@ -152,47 +154,23 @@ def register(request):
 			args['form'] = form
 			return render_to_response("register.html", args)
 
-
-		# err = 0
-		# args['error'] = ''
-		# email = request.POST['email']
-		# password = request.POST['password']
-		# name = request.POST['name']
-		# institute = request.POST['institute']
-		# phno = request.POST['phno']
-
-		# # Form validations
-		# if len(email) < 7:
-		# 	err = 1
-		# 	args['erremail'] = 'Enter a valid email address'
-		# if len(name) < 1 or not all(x.isalpha() or x.isspace() for x in name):
-		# 	err = 1
-		# 	args['errname'] = 'Name should consist of letters and spaces only'
-		# if not check_password(password):
-		# 	err = 1
-		# 	args['errpass'] = 'Password should consist of letters, numbers and underscores only. Mininum length is 8 characters'
-		# if len(institute) < 1 or not all(x.isalpha() or x.isspace() for x in institute):
-		# 	err = 1
-		# 	args['errinst'] = 'Institute should consist of letters and spaces only'
-		# if len(phno) != 10 and not isdigit(phno):
-		# 	err = 1
-		# 	args['errphno'] = 'Enter 10 digit mobile number'
-
-		# # In case of no error, create user
-		# if err == 0:
-		# 	if create_user({'name':name,'email':email,'password':password,'institute':institute,'phno':phno}):
-		# 		args['success'] = 'Registration successful! You may now login and start playing.'
-		# 	else:
-		# 		args['data'] = request.POST
-		# 		args['failure'] = 'An error occured while creating account. Please check the details and try again'
-
 	args["form"] = SignUpForm()
 	return render_to_response('register.html',args)
 
 
 # Leaderboard 
 def leaderboard(request):
-	return render_to_response('leaderboard.html')
+	args = {}
+	us = UserProfile.objects.all()
+	users = []
+	for u in us:
+		l = {}
+		l['user'] = u
+		l['networth'] = get_networth(u)
+		users.append(l)
+	users = sorted(users, key=itemgetter('networth'))
+	args['users'] = users
+	return render_to_response('leaderboard.html',args)
 
 
 # Sign in

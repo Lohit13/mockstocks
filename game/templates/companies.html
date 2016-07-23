@@ -1,6 +1,5 @@
 {% extends "gamebase.html" %}
 {% load staticfiles %}
-{% load subtract %}
 {% block content %}
 
 	<section class="callaction">
@@ -9,7 +8,7 @@
 			<div class="col-lg-12">
 				<div class="big-cta">
 					<div class="cta-text">
-						<h2>Transaction History - Apple</h2>
+						<h2>All Companies</h2>
 					</div>
 				</div>
 			</div>
@@ -20,12 +19,6 @@
 	<section id="content">
 	<div class="container">
 
-		<div class="row">
-			<div class="col-lg-12">
-				
-			</div>
-		</div>
-
 		<!-- divider -->
 		<div class="row">
 			<div class="col-lg-12">
@@ -34,6 +27,56 @@
 			</div>
 		</div>
 		<!-- end divider -->
+
+		<div class="row">
+			{% for company in companies %}
+			<div class="col-lg-12">
+				<div class="panel panel-primary">
+				  <div class="panel-heading"><center>
+				    <h3 class="panel-title">{{company.name}} {{company.ticker}}</h3></center>
+				  </div>
+				  <div class="panel-body"><strong>
+				  	<div class="col-lg-3">
+				  		Industry : {{company.industry}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Turnover : Rs. {{company.turnover}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Profit : Rs. {{company.profit}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Bookvalue : Rs. {{company.bookvalue}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Current Price : Rs. {{company.curprice}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Day High : Rs. {{company.dayhi}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Day Low : Rs. {{company.daylo}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Close : Rs. {{company.close}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Year High : Rs. {{company.yearhi}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Year Low : Rs. {{company.yearlo}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		P/E Ratio : {{company.peratio}}
+				  	</div>
+				  	<div class="col-lg-3">
+				  		Volumes : Rs. {{company.volumes}}
+				  	</div>
+				  </strong></div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
 
 	</div>
 	</section>

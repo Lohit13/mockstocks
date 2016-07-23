@@ -9,7 +9,6 @@ class UserProfile(models.Model):
 	institute = models.TextField()
 	# TO DO - other game fields
 	cash = models.BigIntegerField(default=10000)
-	networth = models.BigIntegerField(default=10000)
 
 	def __unicode__(self):
 		return self.user.get_full_name()

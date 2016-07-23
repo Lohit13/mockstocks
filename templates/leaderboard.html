@@ -17,56 +17,13 @@
 					    		</tr>
 					    	</thead>
 					    	<tbody>
+					    	{% for user in users %}
 					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
+					    			<td>{{ forloop.counter }}</td>
+					    			<td>{{ user.user.user.first_name }}</td>
+					    			<td>{{ user.networth }}</td>
 					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
-					    		<tr>
-					    			<td>1</td>
-					    			<td>Lohit</td>
-					    			<td>10000</td>
-					    		</tr>
+					    	{% endfor %}
 					    	</tbody>
 					  </table>
 					</div> 

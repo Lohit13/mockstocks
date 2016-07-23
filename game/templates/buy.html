@@ -1,73 +1,66 @@
 {% extends "gamebase.html" %}
 {% load staticfiles %}
-{% load subtract %}
+{% load multiply %}
 {% block content %}
 
 	<section class="callaction">
 	<div class="container">
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="big-cta">
-					<div class="cta-text">
-						<h2>Transaction History - Apple</h2>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 	</div>
 	</section>
 
 	<section id="content">
 	<div class="container">
 
+	{% if post %}
 		<div class="row">
-			<div class="col-lg-12">
-				<div class="table-responsive" style="font-size:20px;">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>S.No</th>
-								<th># Shares</th>
-								<th>Buying Price</th>
-								<th>Bought From</th>
-								<th>Bought On</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-
-						</tbody>
-					</table>
-				</div> 
+				<div class="col-lg-12">
+					<div class="big-cta">
+						<div class="cta-text">
+							<h2>No offers for that company yet. Keep checking!</h2>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
+	{% endif %}
+		{% if offers %}
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="big-cta">
+						<div class="cta-text">
+							<h2>Results</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{% for offer in offers %}
+			<div class="row">
+				<div class="col-lg-4">
+			 		<div class="box">
+						<div class="box-gray aligncenter">
+							<h4>{{ offer.company.name }}</h4>
+							<p>
+							<strong>
+								# Shares : {{ offer.shares }}<br><br>
+								Price/share : Rs. {{ offer.price }}<br><br>
+								Total : Rs. {{ offer.shares|multiply:user.price }}
+							</strong>
+							</p>
+						</div>
+						{% if offer.shares|multiply:user.price <= user.cash %}
+						<a href="/buyoffer/{{ offer.id }}/">
+							<div class="box-bottom">
+								<strong><font color="white">Buy</font></strong>
+							</div>
+						</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+
+		{% endif %}
 
 		<!-- divider -->
 		<div class="row">
@@ -78,9 +71,26 @@
 		</div>
 		<!-- end divider -->
 
+		<center>
+			<h3>Search for offers</h3>
+
+			<form method="post" action="/buy/" class="form-horizontal" style="width:10%;">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="company">Company</label>
+					<select class="form-control" id="company" name="company">
+						{% for company in companies %}
+				    		<option value="{{company.id}}">{{ company.name }}</option>
+				    	{% endfor %}
+				  </select>
+				</div>
+
+				<input type="submit" class="btn btn-success" value="Search">
+
+			</form>
+		</center>
+
 	</div>
 	</section>
-
-		
 
 {% endblock %}

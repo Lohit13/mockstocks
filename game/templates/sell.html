@@ -1,6 +1,5 @@
 {% extends "gamebase.html" %}
 {% load staticfiles %}
-{% load subtract %}
 {% block content %}
 
 	<section class="callaction">
@@ -61,30 +60,62 @@
 		<center>
 			<h3>Make a new offer</h3>
 
+		{% if shares %}
 			<form method="post" action="/sell" class="form-horizontal" style="width:30%;">
-
+				{% csrf_token %}
 				<div class="form-group">
 					<label for="company">Company</label>
 					<select class="form-control" id="company" name="company">
-				    	<option>1</option>
-				    	<option>2</option>
-				    	<option>3</option>
-				    	<option>4</option>
+				    		{% for share in shares %}
+				    			<option value="{{ share.company.id }}">{{ share.company.name }}</option>
+				    		{% endfor %}
 				  </select>
 				</div>
 
 				<div class="form-group">
 					<label for="shares"># Shares</label>
-					<input type="number" class="form-control" min="0" max="10" id="shares" name="shares"/>
+					<input type="number" class="form-control" min="1" max="1" id="shares" name="shares"/>
+				</div>
+
+				<div class="form-group">
+					<label for="price">Price</label>
+					<input type="number" class="form-control" min="1" id="price" name="price"/>
 				</div>
 
 				<input type="submit" class="btn btn-success" value="Offer">
 
 			</form>
+		{% else %}
+			<h4>You don't own any share to offer yet</h4>
+		{% endif %}
 		</center>
 
 	</div>
 	</section>
+
+	<script>
+		window.onload = function() {
+		  $(document.body).delegate('#company','change',function(){
+				var selected = $('#company').val();
+				$.ajax({
+			        url : "/getmax/", // the endpoint
+			        type : "POST", // http method
+			        data : { selected : selected }, // data sent with the post request
+
+			        // handle a successful response
+			        success : function(json) {
+			            $('#shares').attr('max',json.max);
+			        },
+
+			        // handle a non-successful response
+			        error : function(xhr,errmsg,err) {
+			            console.log('err'); // provide a bit more info about the error to the console
+			        }
+			    });
+
+		  });
+		};
+	</script>
 
 		
 

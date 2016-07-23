@@ -20,7 +20,13 @@ urlpatterns = patterns('',
     # Buy Shares
     url(r'^buy/$', 'game.views.buy', name='buy shares'),
 
+    # Buy and offer
+    url(r'^buyoffer/(?P<offer_id>\d+)/$', 'game.views.buyoffer', name='accept an offer'),
+
     # Remove an offer
-	url(r'^remove/(?P<offer_id>\d+)/$', 'portal.views.remove_offer', name='remove offer'),
+	url(r'^remove/(?P<offer_id>\d+)/$', 'game.views.remove_offer', name='remove offer'),
+
+	# Gets max shares of user of particular company
+    url(r'^getmax/$', 'game.views.max_shares', name='get max shares'),
 
 )
