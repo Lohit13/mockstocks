@@ -43,6 +43,10 @@ def dashboard(request):
 	args = {}
 	args['user'] = user
 	args["allcompanies"] = Company.objects.all()
+	try:
+		args['news'] = News.objects.all().reverse()[0]
+	except:
+		pass
 	args['rank'] = get_rank(user)
 	co = Corelate.objects.filter(user=user,shares__gt=0)
 	args['shares'] = co

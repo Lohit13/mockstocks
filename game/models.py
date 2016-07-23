@@ -92,3 +92,11 @@ class Corelate(models.Model):
 
 	def __unicode__(self):
 		return str(self.user.user.first_name)
+
+
+# News
+class News(models.Model):
+	news = models.TextField()
+
+	def __unicode__(self):
+		return self.news
