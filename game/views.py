@@ -7,6 +7,7 @@ from game.models import *
 from operator import itemgetter
 import datetime
 import json
+from itertools import chain
 
 # Returns user's networth
 def get_networth(user):
@@ -37,12 +38,31 @@ def get_rank(user):
 	return i
 
 
+@csrf_exempt
+@login_required(login_url='/',redirect_field_name=None)
+def get_curr_prices(request):
+	companies = Company.objects.all()
+	data = {}
+	i = 1
+	for company in companies:
+		data[i] = [company.ticker,company.curprice,company.netchange]
+		i = i + 1
+	return HttpResponse(
+            json.dumps(data),
+            content_type="application/json"
+        )
+
+
 @login_required(login_url='/',redirect_field_name=None)
 def dashboard(request):
 	user = UserProfile.objects.get(user=request.user)
 	args = {}
 	args['user'] = user
 	args["allcompanies"] = Company.objects.all()
+	try:
+		args['news'] = News.objects.order_by('id')[0]
+	except:
+		pass
 	try:
 		args['news'] = News.objects.all().reverse()[0]
 	except:
@@ -52,12 +72,6 @@ def dashboard(request):
 	args['shares'] = co
 	args['networth'] = get_networth(user)
 	return render_to_response('dashboard.html',args)
-
-
-# Transaction history of company for user
-@login_required(login_url='/',redirect_field_name=None)
-def history(request):
-	return render_to_response('history.html')
 
 
 # All companies
@@ -80,7 +94,6 @@ def max_shares(request):
 
 		args = {}
 		args['max'] = c.shares
-		print args['max']
 		jp = json.dumps(args)
 		#return JsonResponse(jp,safe=False)
 		return HttpResponse(
@@ -117,12 +130,14 @@ def sell(request):
 @login_required(login_url='/',redirect_field_name=None)
 def buy(request):
 	args = {}
+	user = UserProfile.objects.get(user=request.user)
 	args.update(csrf(request))
 	args['companies'] = Company.objects.all()
+	args['initcoms'] = Company.objects.filter(initshares__gt=0)
 	if request.method == 'POST':
 		cid = request.POST['company']
 		company = Company.objects.get(id=cid)
-		offers = Offer.objects.filter(company=company,active=True)
+		offers = Offer.objects.filter(company=company,active=True).exclude(user=user)
 		args['user'] = UserProfile.objects.get(user=request.user)
 		args['offers'] = offers
 		args['post'] = 1
@@ -174,5 +189,56 @@ def remove_offer(request,offer_id):
 	return HttpResponseRedirect('/sell')
 
 
+# Transaction history
+@login_required(login_url='/',redirect_field_name=None)
+def history(request,company_id):
+	user = UserProfile.objects.get(user=request.user)
+	com = Company.objects.get(id=company_id)
+	one = Transaction.objects.filter(offer__company=com).filter(buyer=user).order_by('bought_at')
+	two = Transaction.objects.filter(offer__company=com).filter(offer__user=user).order_by('bought_at')
+	result = list(chain(one,two))
+	args = {}
+	args['trans'] = result
+	args['com'] = com
+	return render_to_response('history.html',args)
 
 
+# Get company info ajax
+@csrf_exempt
+@login_required(login_url='/',redirect_field_name=None)
+def getinfo(request):
+	companies = Company.objects.all()
+	data = {}
+	for com in companies:
+		data[com.id] = [com.initshares, com.curprice]
+	return HttpResponse(
+            json.dumps(data),
+            content_type="application/json"
+        )
+
+
+# Initshare buy
+@login_required(login_url='/',redirect_field_name=None)
+def initbuy(request):
+	if request.method=='POST':
+		user = UserProfile.objects.get(user=request.user)
+		com = Company.objects.get(id=request.POST['comid'])
+		shares = request.POST['shares']
+		total = int(shares)*com.curprice
+		cobuyer = Corelate.objects.get(company=com,user=user)
+
+		if total > user.cash:
+			return HttpResponseRedirect('/buy')
+
+		offer = Offer(user=None, company=com, shares=int(shares), price=com.curprice, offered_at=datetime.datetime.now(), active=False)
+		offer.save()
+		trans = Transaction(offer=offer, buyer=user, bought_at=datetime.datetime.now())
+		cobuyer.shares = cobuyer.shares+offer.shares
+		com.initshares = com.initshares - offer.shares
+		user.cash = user.cash-total
+		com.save()
+		user.save()
+		trans.save()
+		cobuyer.save()
+		
+	return HttpResponseRedirect('/')

@@ -29,4 +29,16 @@ urlpatterns = patterns('',
 	# Gets max shares of user of particular company
     url(r'^getmax/$', 'game.views.max_shares', name='get max shares'),
 
+    # Gets currprice and netchange of all companies
+    url(r'^getprices/$', 'game.views.get_curr_prices', name='get curr prices'),
+
+    # Transaction history
+    url(r'^history/(?P<company_id>\d+)/$', 'game.views.history', name='transaction history'),
+
+    # Gets currprice and netchange of all companies
+    url(r'^getinfo/$', 'game.views.getinfo', name='get company info'),
+
+    # Initshare buy function
+    url(r'^initbuy/$', 'game.views.initbuy', name='initshare buy'),
+
 )

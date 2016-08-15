@@ -34,6 +34,8 @@ class Company(models.Model):
 	profit = models.BigIntegerField(default=0)
 	# Total number of shares 
 	shares = models.IntegerField(default=0)
+	# Shares for initial buyin
+	initshares = models.IntegerField(default=0)
 	# Initial value of shares
 	bookvalue = models.IntegerField(default=0)
 	# Current price of share
@@ -62,9 +64,9 @@ class Company(models.Model):
 # Offer of share model
 class Offer(models.Model):
 	# User who offered the shares
-	user = models.ForeignKey(UserProfile)
+	user = models.ForeignKey(UserProfile, blank=True, null=True)
 	# Company
-	company = models.ForeignKey(Company) 
+	company = models.ForeignKey(Company)
 	# Number of shares offered
 	shares = models.IntegerField()
 	# Offer price

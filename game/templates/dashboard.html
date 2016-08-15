@@ -27,25 +27,16 @@
 				<div class="row">
 					<center>
 							<div class="panel panel-default panel-primary">
-								<div class="panel-heading"><marquee><strong>{{ news }}<strong></marquee></div>
+								<div class="panel-heading"><marquee><font size="5"><strong>{{ news.news }}<strong></font></marquee></div>
 								<div class="panel-footer">
 									<marquee>
 
-										{% for company in allcompanies %}
-											<strong>{{ company.ticker }} </strong>
-											{{ company.curprice }}
-
-											{% if company.netchange < 0 %}
-												<i class="fa fa-arrow-down" aria-hidden="true"></i><span style = "color:red;">
-											{% else %}
-												<i class="fa fa-arrow-up" aria-hidden="true"></i><span style = "color:green;">
-											{% endif %}
-												 {{ company.netchange }}
-												</span>
-
-												&nbsp&nbsp&nbsp&nbsp&nbsp
-
+										{% for i in "xxxxxxxxxx" %}
+										    <strong id="ticker{{ forloop.counter }}"></strong>
+											<span id="currprice{{ forloop.counter }}"></span>
+											<i class="fa fa-arrow-down" aria-hidden="true" id="arrow{{ forloop.counter }}"></i><span style="color:red;" id="netchange{{ forloop.counter }}"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 										{% endfor %}
+										
 									</marquee>
 
 
@@ -181,7 +172,7 @@
 							<li class="col-lg-3 design" style="padding:0;">
 								<div class="item-thumbs" style="background-color:#e8e8e8;height:95%;width:95%;">
 								<!-- Fancybox - Gallery Enabled - Title - Full Image -->
-								<a class="hover-wrap" href="/history">
+								<a class="hover-wrap" href="/history/{{share.company.id}}/">
 								<!-- <div class="hover-wrap fancybox">
 								</div> -->
 								<span class="overlay-img"></span>
@@ -225,6 +216,47 @@
 
 	</div>
 	</section>
+
+	<script type="text/javascript">
+		update_price = function(){
+		    $.ajax({
+			        url : "/getprices/", // the endpoint
+			        type : "GET", // http method
+
+			        // handle a successful response
+			        success : function(json) {
+			        	var i = 1;
+			            for (var company in json){
+			            	$('#ticker' + i).html(json[company][0]);
+			            	$('#currprice' + i).html('Rs.' + json[company][1]);
+			            	if(json[company][2] >= 0){
+			            		$("#arrow" + i).attr('class', 'fa fa-arrow-up');
+			            		$("#netchange" + i).attr('style', 'color:green;');
+			            		$("#netchange" + i).html(json[company][2]);
+			            	}
+			            	else{
+			            		$("#arrow" + i).attr('class', 'fa fa-arrow-down');
+			            		$("#netchange" + i).attr('style', 'color:red;');
+			            		$("#netchange" + i).html(json[company][2]);
+			            	}
+			            	i++;
+			            }
+			        },
+
+			        // handle a non-successful response
+			        error : function(xhr,errmsg,err) {
+			            console.log('err'); // provide a bit more info about the error to the console
+			        }
+			    });
+		}
+
+		window.onload = function() {
+			update_price();
+			setInterval(function(){
+			    update_price();
+			}, 23000);
+		};
+	</script>
 
 
 {% endblock %}

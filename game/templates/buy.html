@@ -87,10 +87,73 @@
 
 				<input type="submit" class="btn btn-success" value="Search">
 
-			</form>
+			</form><br><br>
 		</center>
+
+		{% if initcoms %}
+		<!-- divider -->
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="solidline">
+				</div>
+			</div>
+		</div>
+		<!-- end divider -->
+
+		<center><h3>Initial Buy Ins</h3></center>
+
+		{% for com in initcoms %}
+		<div class="col-md-3">
+			<div class="panel panel-primary">
+				<div class="panel-heading" >
+					<h3 class="panel-title" style="display:inline;">{{ com.name }} ({{com.ticker}})</h3>
+				</div>
+				<div class="panel-body"><strong>
+					Total Shares &nbsp: <span id="total{{com.id}}">{{ com.initshares }}</span> <br><br>
+					Current Price : Rs. <span id="curprice{{com.id}}">{{ com.curprice }}</span> <br><br>
+					<form method="post" action="/initbuy/">
+						{% csrf_token %}
+						<input type="number" min="0" max="{{com.initshares}}" name="shares" id="shares{{com.id}}"/>
+						<input type="text" name="comid" value="{{ com.id }}" hidden/>
+						<input type="submit" class="btn btn-success" value="Buy">
+					</form>
+				</strong></div>
+			</div>
+		</div>
+		{% endfor %}
+		{% endif %}
 
 	</div>
 	</section>
+
+	<script type="text/javascript">
+		update_price = function(){
+		    $.ajax({
+			        url : "/getinfo/", // the endpoint
+			        type : "GET", // http method
+
+			        // handle a successful response
+			        success : function(json) {
+			            for (var com in json){
+			            	$('#total' + com).html(json[com][0]);
+			            	$('#curprice' + com).html(json[com][1]);
+			            	$("#shares" + com).attr('max', json[com][0]);
+			            }
+			        },
+
+			        // handle a non-successful response
+			        error : function(xhr,errmsg,err) {
+			            console.log('err'); // provide a bit more info about the error to the console
+			        }
+			    });
+		}
+
+		window.onload = function() {
+			update_price();
+			setInterval(function(){
+			    update_price();
+			}, 1000);
+		};
+	</script>
 
 {% endblock %}

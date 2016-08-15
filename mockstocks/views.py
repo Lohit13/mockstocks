@@ -33,7 +33,7 @@ class SignUpForm(forms.ModelForm):
 																				 'name' : 'email',
 																				 'pattern' : "[^@]+@[^@]+\.[a-zA-Z]{2,6}"}))
 
-	institute = forms.EmailField(required = True, widget = forms.TextInput(attrs = {'class' : 'form-control',
+	institute = forms.CharField(required = True, widget = forms.TextInput(attrs = {'class' : 'form-control',
 																				 	 'placeholder' : '',
 																				 	 'autocomplete' : 'off',
 																				 	 'name' : 'institute'}))

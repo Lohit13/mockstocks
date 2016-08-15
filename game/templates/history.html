@@ -1,6 +1,5 @@
 {% extends "gamebase.html" %}
 {% load staticfiles %}
-{% load subtract %}
 {% block content %}
 
 	<section class="callaction">
@@ -9,7 +8,7 @@
 			<div class="col-lg-12">
 				<div class="big-cta">
 					<div class="cta-text">
-						<h2>Transaction History - Apple</h2>
+						<h2>Transaction History - {{ com.name }}</h2>
 					</div>
 				</div>
 			</div>
@@ -23,48 +22,34 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="table-responsive" style="font-size:20px;">
+					{% if trans %}
 					<table class="table table-hover">
 						<thead>
 							<tr>
 								<th>S.No</th>
 								<th># Shares</th>
-								<th>Buying Price</th>
-								<th>Bought From</th>
+								<th>Price</th>
+								<th>Seller</th>
+								<th>Buyer</th>
 								<th>Bought On</th>
 							</tr>
 						</thead>
 						<tbody>
+						{% for t in trans %}
 							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
+								<td>{{ forloop.counter }}</td>
+								<td>{{ t.offer.shares }}</td>
+								<td>{{ t.offer.price }}</td>
+								<td>{% if t.offer.user.user.first_name %}{{ t.offer.user.user.first_name }}{% else %}{{ com.name }}{% endif %}</td>
+								<td>{{ t.buyer.user.first_name }}</td>
+								<td>{{ t.bought_at }}</td>
 							</tr>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>10</td>
-								<td>25</td>
-								<td>User</td>
-								<td>Date</td>
-							</tr>
-
+						{% endfor %}
 						</tbody>
 					</table>
+					{% else %}
+					<center><h3>No transactions to show yet.</h3></center>
+					{% endif %}
 				</div> 
 			</div>
 		</div>
