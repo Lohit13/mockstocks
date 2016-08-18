@@ -46,8 +46,7 @@ class SignUpForm(forms.ModelForm):
 
 	class Meta:
 		model = User
-		fields = ('username', 'password', 'email')
-
+		fields = ('password', 'email')
 
 # Home page of app
 def index(request):
@@ -107,7 +106,7 @@ def register(request):
 		form = SignUpForm(request.POST)
 
 		captach_response = requests.post("https://www.google.com/recaptcha/api/siteverify",
-										 data={'secret': "6LcbFg4TAAAAAITqrBWuwH2S9GOk_zO10quel8E1",
+										 data={'secret': "6Le_hycTAAAAAAf_8UXQm0u_VQOQH03mv2KfuD5H",
 											   'response': request.POST["g-recaptcha-response"]})
 
 		verdict = json.loads(captach_response.text)['success']
@@ -124,12 +123,13 @@ def register(request):
 				state = True
 
 		else:
+			print 'somesome'
 			args['form'] = form
 			return render_to_response("register.html", args)
 
 		if state == True:
 
-			if User.objects.filter(username = request.POST["name"]).exists():
+			if User.objects.filter(username = request.POST["phone"]).exists():
 				args['form'] = form
 				return render_to_response("register.html", args)
 
@@ -148,6 +148,7 @@ def register(request):
 
 				u = UserProfile(user = user, institute = request.POST['institute'])
 				u.save()
+				u.corelate()
 
 				return render_to_response("index.html", args)
 		else:
@@ -169,7 +170,7 @@ def leaderboard(request):
 		l['networth'] = get_networth(u)
 		users.append(l)
 	users = sorted(users, key=itemgetter('networth'))
-	args['users'] = users
+	args['users'] = users[::-1]
 	return render_to_response('leaderboard.html',args)
 
 

@@ -61,7 +61,7 @@
 			<h3>Make a new offer</h3>
 
 		{% if shares %}
-			<form method="post" action="/sell" class="form-horizontal" style="width:30%;">
+			<form method="post" action="/sell/" class="form-horizontal" style="width:30%;">
 				{% csrf_token %}
 				<div class="form-group">
 					<label for="company">Company</label>
@@ -73,7 +73,7 @@
 				</div>
 
 				<div class="form-group">
-					<label for="shares"># Shares</label>
+					<label for="shares"># Shares</label>&nbsp<strong>(Max: <span id="maxdisp"></span>)</strong>
 					<input type="number" class="form-control" min="1" max="1" id="shares" name="shares"/>
 				</div>
 
@@ -95,6 +95,25 @@
 
 	<script>
 		window.onload = function() {
+			var selected = $('#company').val();
+			$.ajax({
+		        url : "/getmax/", // the endpoint
+		        type : "POST", // http method
+		        data : { selected : selected }, // data sent with the post request
+
+		        // handle a successful response
+		        success : function(json) {
+		            $('#shares').attr('max',json.max);
+		            $('#maxdisp').text(json.max);
+		        },
+
+		        // handle a non-successful response
+		        error : function(xhr,errmsg,err) {
+		            console.log('err'); // provide a bit more info about the error to the console
+		        }
+		    });
+
+		    
 		  $(document.body).delegate('#company','change',function(){
 				var selected = $('#company').val();
 				$.ajax({
@@ -105,6 +124,7 @@
 			        // handle a successful response
 			        success : function(json) {
 			            $('#shares').attr('max',json.max);
+			            $('#maxdisp').text(json.max);
 			        },
 
 			        // handle a non-successful response

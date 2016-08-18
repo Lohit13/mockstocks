@@ -32,6 +32,9 @@ urlpatterns = patterns('',
     # Gets currprice and netchange of all companies
     url(r'^getprices/$', 'game.views.get_curr_prices', name='get curr prices'),
 
+    # Get currprice of a company
+    url(r'^getcurprice/$', 'game.views.get_curr_price', name='get curr price'),
+
     # Transaction history
     url(r'^history/(?P<company_id>\d+)/$', 'game.views.history', name='transaction history'),
 

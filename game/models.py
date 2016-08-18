@@ -8,7 +8,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	institute = models.TextField()
 	# TO DO - other game fields
-	cash = models.BigIntegerField(default=10000)
+	cash = models.BigIntegerField(default=100000)
 
 	def __unicode__(self):
 		return self.user.get_full_name()
@@ -28,8 +28,6 @@ class Company(models.Model):
 	ticker = models.CharField(max_length=10)
 	# Field the company is in
 	industry = models.CharField(max_length=20)
-	# Company turnover
-	turnover = models.BigIntegerField(default=0)
 	# Quarterly profit
 	profit = models.BigIntegerField(default=0)
 	# Total number of shares 
@@ -56,6 +54,10 @@ class Company(models.Model):
 	peratio = models.IntegerField(default=0)
 	# Total number of shares dealt in previous day
 	volumes = models.IntegerField(default=0)
+	# Volume of next day
+	nextvol = models.BigIntegerField(default=0)
+	# Just to see close
+	nextclose = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name

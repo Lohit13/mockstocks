@@ -8,6 +8,7 @@ from operator import itemgetter
 import datetime
 import json
 from itertools import chain
+from game.tasks import *
 
 # Returns user's networth
 def get_networth(user):
@@ -29,9 +30,9 @@ def get_rank(user):
 		l['user'] = u
 		l['networth'] = get_networth(u)
 		users.append(l)
-	users = sorted(users, key=itemgetter('networth')) 
+	users = sorted(users, key=itemgetter('networth'))
 	i = 1
-	for u in users:
+	for u in users[::-1]:
 		if u['user'] == user:
 			break
 		i += 1
@@ -91,11 +92,27 @@ def max_shares(request):
 		user = UserProfile.objects.get(user=request.user)
 		company = Company.objects.get(id=selected)
 		c = Corelate.objects.get(user=user,company=company)
-
 		args = {}
 		args['max'] = c.shares
 		jp = json.dumps(args)
-		#return JsonResponse(jp,safe=False)
+		return HttpResponse(
+            json.dumps(args),
+            content_type="application/json"
+        )
+	else:
+		return None
+
+
+# View for sell ajax
+@csrf_exempt
+@login_required(login_url='/',redirect_field_name=None)
+def get_curr_price(request):
+	if request.method == 'POST':
+		selected = request.POST['selected']
+		company = Company.objects.get(id=selected)
+		args = {}
+		args['curprice'] = company.curprice
+		jp = json.dumps(args)
 		return HttpResponse(
             json.dumps(args),
             content_type="application/json"
@@ -118,7 +135,7 @@ def sell(request):
 		cid = request.POST['company']
 		shares = request.POST['shares']
 		price = request.POST['price']
-		company = Company.objetcs.get(id=cid)
+		company = Company.objects.get(id=cid)
 		offer = Offer(user=user,company=company,shares=shares,price=price,offered_at=datetime.datetime.now())
 		offer.save()
 		return HttpResponseRedirect('/sell')
@@ -134,6 +151,7 @@ def buy(request):
 	args.update(csrf(request))
 	args['companies'] = Company.objects.all()
 	args['initcoms'] = Company.objects.filter(initshares__gt=0)
+	args['user'] = user
 	if request.method == 'POST':
 		cid = request.POST['company']
 		company = Company.objects.get(id=cid)
@@ -144,34 +162,23 @@ def buy(request):
 	return render_to_response('buy.html',args)
 
 
-# Accept an offer
 @login_required(login_url='/',redirect_field_name=None)
 def buyoffer(request,offer_id):
 	user = UserProfile.objects.get(user=request.user)
-	offer = Offer.objects.get(id=offer_id)
-	company = offer.company
-	seller = offer.user
+	try:
+		offer = Offer.objects.get(id=offer_id)
+	except:
+		return HttpResponseRedirect('/buy/')
+
 	total = offer.shares*offer.price
 
 	if total > user.cash:
 		return HttpResponseRedirect('/buy')
 
-	cobuyer = Corelate.objects.get(company=company,user=user)
-	coseller = Corelate.objects.get(company=company,user=seller)
+	netchange = offer.price - offer.company.curprice
 
-	offer.active = False
-	cobuyer.shares = cobuyer.shares+offer.shares
-	coseller.shares = coseller.shares-offer.shares
-	seller.cash = seller.cash+total
-	user.cash = user.cash-total
-	tran = Transaction(offer=offer,buyer=user,bought_at=datetime.datetime.now())
+	buyOffer.delay(user,offer,netchange)
 
-	tran.save()
-	user.save()
-	seller.save()
-	coseller.save()
-	cobuyer.save()
-	offer.save()
 	return HttpResponseRedirect('/dashboard')
 
 
@@ -194,9 +201,10 @@ def remove_offer(request,offer_id):
 def history(request,company_id):
 	user = UserProfile.objects.get(user=request.user)
 	com = Company.objects.get(id=company_id)
-	one = Transaction.objects.filter(offer__company=com).filter(buyer=user).order_by('bought_at')
-	two = Transaction.objects.filter(offer__company=com).filter(offer__user=user).order_by('bought_at')
+	one = Transaction.objects.filter(offer__company=com).filter(buyer=user)
+	two = Transaction.objects.filter(offer__company=com).filter(offer__user=user)
 	result = list(chain(one,two))
+	result.sort(key=lambda x: x.bought_at, reverse=False)
 	args = {}
 	args['trans'] = result
 	args['com'] = com
@@ -225,20 +233,10 @@ def initbuy(request):
 		com = Company.objects.get(id=request.POST['comid'])
 		shares = request.POST['shares']
 		total = int(shares)*com.curprice
-		cobuyer = Corelate.objects.get(company=com,user=user)
 
 		if total > user.cash:
 			return HttpResponseRedirect('/buy')
 
-		offer = Offer(user=None, company=com, shares=int(shares), price=com.curprice, offered_at=datetime.datetime.now(), active=False)
-		offer.save()
-		trans = Transaction(offer=offer, buyer=user, bought_at=datetime.datetime.now())
-		cobuyer.shares = cobuyer.shares+offer.shares
-		com.initshares = com.initshares - offer.shares
-		user.cash = user.cash-total
-		com.save()
-		user.save()
-		trans.save()
-		cobuyer.save()
+		initBuy.delay(user,com,shares)
 		
 	return HttpResponseRedirect('/')
