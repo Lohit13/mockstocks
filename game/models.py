@@ -101,6 +101,7 @@ class Corelate(models.Model):
 # News
 class News(models.Model):
 	news = models.TextField()
+	active = models.BooleanField(default=True)
 
 	def __unicode__(self):
 		return self.news

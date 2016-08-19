@@ -39,6 +39,27 @@ def get_rank(user):
 	return i
 
 
+# Return news for appropriate time
+def get_news():
+	order1 = [1,3,7,16,9,23,24,5,13,12,21,2,18]
+	order2 = [1,4,5,6,8,10,11,14,15,17,19,20,22]
+	d = datetime.datetime.now()
+	order = []
+	t = 0
+	if int(d.strftime('%d')) == 19:
+		t = 19
+		order = order1
+	else:
+		t = 20
+		order = order2
+	start = datetime.datetime(2016, 8, t, 9, 0, 0, 0)
+	end = datetime.datetime.now()
+	dt = end - start
+	minutes = dt.seconds/60
+	index = minutes/30
+	return News.objects.all()[index]
+
+
 @csrf_exempt
 @login_required(login_url='/',redirect_field_name=None)
 def get_curr_prices(request):
@@ -60,18 +81,15 @@ def dashboard(request):
 	args = {}
 	args['user'] = user
 	args["allcompanies"] = Company.objects.all()
-	try:
-		args['news'] = News.objects.order_by('id')[0]
-	except:
-		pass
-	try:
-		args['news'] = News.objects.all().reverse()[0]
-	except:
-		pass
+	now = datetime.datetime.now()
+	if int(now.strftime('%H')) >= 9:
+		args['news'] = get_news()
 	args['rank'] = get_rank(user)
 	co = Corelate.objects.filter(user=user,shares__gt=0)
 	args['shares'] = co
 	args['networth'] = get_networth(user)
+	if int(now.strftime('%H')) < 9:
+		return render_to_response('notyet.html',args)
 	return render_to_response('dashboard.html',args)
 
 
